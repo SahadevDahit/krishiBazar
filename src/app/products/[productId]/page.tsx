@@ -1,9 +1,5 @@
 "use client";
 import React from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import styles from "./page.module.css";
-import Image from "next/image";
 import ProductOptions from "../components/productOptions";
 import ProductVariants from "../components/productVariants";
 import ProductUpdate from "../components/productUpdate";

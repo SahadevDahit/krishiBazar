@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <>
       <div className={styles.form}>
-        <Form className="border rounded-3 p-3 mb-4">
+        <Form className="border rounded-3 p-3 mb-4  shadow-lg p-3 bg-white rounded">
           <div className="d-flex justify-content-center align-items-center mb-3">
             <Image
               src="/product.svg" // Replace with your image path
@@ -44,12 +44,7 @@ export default function Page() {
               <option value="false">No</option>
             </Form.Control>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formGroupDescription">
-            <Form.Label>
-              <b>Description</b>
-            </Form.Label>
-            <Form.Control as="textarea" rows={3} name="description" />
-          </Form.Group>
+
           <Form.Group className="mb-3" controlId="formGroupPrice">
             <Form.Label>
               <b>Price</b>
@@ -83,7 +78,12 @@ export default function Page() {
               placeholder="Enter Minimum Order Quantity"
             />
           </Form.Group>
-
+          <Form.Group className="mb-3" controlId="formGroupDescription">
+            <Form.Label>
+              <b>Description</b>
+            </Form.Label>
+            <Form.Control as="textarea" rows={3} name="description" />
+          </Form.Group>
           <Button
             variant="primary"
             type="submit"

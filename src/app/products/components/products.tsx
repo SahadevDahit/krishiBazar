@@ -115,18 +115,7 @@ export default function Page() {
                 <option value="false">No</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formGroupDescription">
-              <Form.Label>
-                <b>Description</b>
-              </Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="description"
-                onChange={handleFormChange}
-                value={formData.description}
-              />
-            </Form.Group>
+
             <Form.Group className="mb-3" controlId="formGroupPrice">
               <Form.Label>
                 <b>Price</b>
@@ -164,6 +153,18 @@ export default function Page() {
                 placeholder="Enter Minimum Order Quantity"
                 onChange={handleFormChange}
                 value={formData.minimumOrderQuantity}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formGroupDescription">
+              <Form.Label>
+                <b>Description</b>
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                name="description"
+                onChange={handleFormChange}
+                value={formData.description}
               />
             </Form.Group>
             <Button

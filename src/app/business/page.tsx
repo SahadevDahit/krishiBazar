@@ -4,15 +4,24 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import styles from "./page.module.css";
 import Table from "react-bootstrap/Table";
-
+interface Order {
+  orderId: string;
+  status: string;
+  confirmed: boolean; // Add the "confirmed" property
+}
 interface Business {
   ownerId: string;
   name: string;
   address: string;
   phoneNumber: string;
 }
-
 export default function Page() {
+  const orders: Order[] = [
+    { orderId: "1", status: "confirmed", confirmed: true },
+    { orderId: "2", status: "pending", confirmed: false },
+    { orderId: "3", status: "shipped", confirmed: true },
+  ];
+
   const defaultBusinessData: Business[] = [
     {
       ownerId: "1",
@@ -38,19 +47,18 @@ export default function Page() {
       address: "101 Pine St",
       phoneNumber: "777-888-9999",
     },
-    // Add more business data objects as needed
   ];
 
-  const handleRowClick = (ownerId: string) => {
+  const handleRowClick = (orderId: string) => {
+    window.location.href += `/${orderId}`;
   };
-
   return (
     <>
       <h2 className="text-center py-3">Business Information</h2>
 
       <div className="container d-sm-block d-md-flex justify-content-around">
-             <div className={`${styles.form} shadow-lg p-3 bg-white rounded`}>
-<Form className="border rounded-3 p-3 mb-4">
+        <div className={`${styles.form} shadow-lg p-3 bg-white rounded`}>
+          <Form className="border rounded-3 p-3 mb-4">
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>
                 <b>Name</b>
@@ -95,7 +103,6 @@ export default function Page() {
           </Form>
         </div>
         <div>
-          
           <Table
             responsive="sm"
             className="container mt-3 shadow-lg p-3 bg-white rounded"
@@ -127,6 +134,38 @@ export default function Page() {
           </Table>
         </div>
       </div>
+      <hr className="mx-5" />
+      <h2 className="text-center">Business</h2>
+      <Table
+        responsive="sm"
+        className="container mt-3 shadow-lg p-3 bg-white rounded"
+        striped
+        bordered
+        hover
+      >
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Order ID</th>
+            <th>Status</th>
+            <th>Confirmed</th> {/* Add a new column for "Confirmed" */}
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order, index: number) => (
+            <tr
+              key={order.orderId}
+              onClick={() => handleRowClick(order.orderId)}
+            >
+              <td>{index + 1}</td>
+              <td>{order.orderId}</td>
+              <td>{order.status}</td>
+              <td>{order.confirmed ? "Yes" : "No"}</td>{" "}
+              {/* Display "Yes" or "No" based on the "confirmed" property */}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </>
   );
 }
