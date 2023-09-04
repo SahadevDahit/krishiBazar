@@ -1,0 +1,10 @@
+.nav {
+    width: 100%;
+    border-radius: 0.2rem;
+    /* box-shadow: 11px 11px 22px #a5a5a5, -11px -11px 22px #ffffff; */
+    -webkit-box-shadow: -1px 7px 5px -6px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: -1px 7px 5px -6px rgba(0, 0, 0, 0.75);
+    box-shadow: -1px 7px 5px -6px rgba(0, 0, 0, 0.75);
+    background-color: white;
+    color: black;
+}

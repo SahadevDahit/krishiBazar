@@ -1,0 +1,30 @@
+/* Default styles for the form */
+.form {
+    width: 40%;
+    margin-top: 1rem;
+    margin-right: 1rem
+}
+
+/* Adjust the width for screens smaller than 768px (e.g., mobile devices) */
+@media (max-width: 767px) {
+    .form {
+        width: 80%;
+        /* Adjust the width as needed for smaller screens */
+    }
+}
+
+/* Adjust the width for screens between 768px and 992px (e.g., tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .form {
+        width: 60%;
+        /* Adjust the width as needed for medium-sized screens */
+    }
+}
+
+/* Adjust the width for screens larger than 992px (e.g., desktops) */
+@media (min-width: 992px) {
+    .form {
+        width: 30%;
+        /* Revert to the original width for larger screens */
+    }
+}

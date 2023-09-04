@@ -3,17 +3,28 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import styles from "./page.module.css";
-interface page {
-  params: {
-    userId: string;
-  };
-}
-export default function Page({ params }: page) {
+import Image from "next/image";
+
+export default function Page() {
   return (
     <>
-      <div className={styles.form}>
+      <div className={`${styles.form} shadow-lg p-3 bg-white rounded`}>
         <h2 className="text-center">User Information</h2>
-        <Form className="border p-3  mx-auto">
+        <Form className="border rounded-3 p-3  mx-auto mb-4">
+          <div className="d-flex justify-content-center align-items-center mb-3">
+            <Image
+              src="/profileImage.png" // Replace with your image path
+              alt="User Image"
+              width={100} // Set the desired width
+              height={100} // Set the desired height
+            />
+            <Form.Group controlId="formFile" className="mb-3">
+              <Form.Control type="file" />
+              <Button variant="primary" type="submit" className="mt-3">
+                Upload
+              </Button>
+            </Form.Group>
+          </div>
           <Form.Group className="mb-3" controlId="formGroupMobileNumber">
             <Form.Label>
               <b>Mobile Number</b>
@@ -39,7 +50,7 @@ export default function Page({ params }: page) {
             <Form.Control type="email" placeholder="Enter email" />
           </Form.Group>
           <Button variant="primary" type="submit">
-            Update
+            Submit
           </Button>
         </Form>
       </div>

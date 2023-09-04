@@ -1,111 +1,129 @@
 "use client";
 import React from "react";
-import styles from "./page.module.css";
-import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
-// Define the User interface
-interface User {
-  userId: string;
-  mobileNumber: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+import Card from "react-bootstrap/Card";
+import Image from "next/image";
+import styles from "./page.module.css";
+// Define the Product interface
+interface Product {
+  productId: number;
+  productName: string;
+  price: number;
+  productImage: string; // Using the same image URL for all products
 }
 
 export default function Home() {
-  // Default user data array
-  const defaultUserData: User[] = [
+  // Sample product data (using the same image URL for all products)
+  const products: Product[] = [
     {
-      userId: "1",
-      mobileNumber: "123-456-7890",
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@example.com",
+      productId: 1,
+      productName: "Product 1",
+      price: 100,
+      productImage: "/product.svg", // Using the same image URL for all products
     },
     {
-      userId: "2",
-      mobileNumber: "987-654-3210",
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "jane@example.com",
+      productId: 2,
+      productName: "Product 2",
+      price: 150,
+      productImage: "/product.svg", // Using the same image URL for all products
     },
     {
-      userId: "3",
-      mobileNumber: "555-555-5555",
-      firstName: "Alice",
-      lastName: "Johnson",
-      email: "alice@example.com",
+      productId: 3,
+      productName: "Product 3",
+      price: 80,
+      productImage: "/product.svg", // Using the same image URL for all products
     },
     {
-      userId: "4",
-      mobileNumber: "777-888-9999",
-      firstName: "Bob",
-      lastName: "Williams",
-      email: "bob@example.com",
+      productId: 4,
+      productName: "Product 4",
+      price: 120,
+      productImage: "/product.svg", // Using the same image URL for all products
     },
-    // Add more user data objects as needed
+    {
+      productId: 5,
+      productName: "Product 5",
+      price: 200,
+      productImage: "/product.svg", // Using the same image URL for all products
+    },
+    {
+      productId: 6,
+      productName: "Product 6",
+      price: 90,
+      productImage: "/product.svg", // Using the same image URL for all products
+    },
+    {
+      productId: 7,
+      productName: "Product 7",
+      price: 110,
+      productImage: "/product.svg", // Using the same image URL for all products
+    },
+    {
+      productId: 8,
+      productName: "Product 8",
+      price: 70,
+      productImage: "/product.svg", // Using the same image URL for all products
+    },
+    {
+      productId: 9,
+      productName: "Product 9",
+      price: 130,
+      productImage: "/product.svg", // Using the same image URL for all products
+    },
+    {
+      productId: 10,
+      productName: "Product 10",
+      price: 180,
+      productImage: "/product.svg", // Using the same image URL for all products
+    },
+    // Add more products as needed
   ];
-  const handleRowClick = (userId: string) => {
-    window.location.href = `/${userId}`;
-  };
+
   return (
-    <>
-      <div className={styles.main}>
-        <h2 className="text-center py-3">Krishi Bazar</h2>
-        <h3 className="text-center">Users</h3>
-        <div id={styles.container} className="d-sm-flex ms-2">
-          <div className={styles.add}>
-            <u>New User</u>
-          </div>
-          <div className="search d-flex">
-            <Form className="d-flex align-items-center">
-              <div className="input-group mb-1 flex-grow-1">
-                <Form.Group className="" controlId="formBasicPassword">
-                  <Form.Control type="text" placeholder="Enter search key..." />
-                </Form.Group>
-                <div className="input-group-append">
-                  <Button variant="primary">
-                    <FontAwesomeIcon icon={faSearch} />
+    <div className="container pt-5">
+      <h1 className="text-center">Products List</h1>
+      <div className="row">
+        {products.map((product) => (
+          <div
+            key={product.productId}
+            className="col-sm-12 col-md-4 col-lg-3 mb-4"
+          >
+            <Card
+              className={`${styles.card} w-100 shadow-lg p-3 bg-white rounded`}
+            >
+              <div className="text-center">
+                <Image
+                  src={product.productImage}
+                  alt={product.productName}
+                  width={150}
+                  height={150}
+                />
+              </div>
+              <Card.Body className="mx-auto">
+                <Card.Title>{product.productName}</Card.Title>
+                <h4>
+                  <b>NPR {product.price}</b>
+                </h4>
+                <div className="d-sm-flex justify-content-between">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="btn-sm mb-2 mx-1"
+                  >
+                    Add To Cart
+                  </Button>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="btn-sm mb-2 mx-1"
+                  >
+                    Buy Now
                   </Button>
                 </div>
-              </div>
-            </Form>
+              </Card.Body>
+            </Card>
           </div>
-        </div>
-
-        <Table
-          responsive="sm"
-          className="container mt-3"
-          striped
-          bordered
-          hover
-        >
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Mobile Number</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            {defaultUserData.map((user) => (
-              <tr key={user.userId} onClick={() => handleRowClick(user.userId)}>
-                <td>{user.userId}</td>
-                <td>{user.mobileNumber}</td>
-                <td>{user.firstName}</td>
-                <td>{user.lastName}</td>
-                <td>{user.email}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        ))}
       </div>
-    </>
+    </div>
   );
 }
