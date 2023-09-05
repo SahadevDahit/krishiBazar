@@ -13,6 +13,7 @@ interface page {
 
 // Define an interface for the product data
 interface Product {
+  title: string;
   categoryName: string;
   active: boolean;
   price: number;
@@ -35,6 +36,7 @@ interface OrderDetails {
 export default function Page({ params }: page) {
   // Create an instance of the Product interface with default values
   const product: Product = {
+    title: "Product Title",
     categoryName: "Vegetables",
     active: true,
     price: 0, // Set your default price value here
@@ -87,7 +89,11 @@ export default function Page({ params }: page) {
                 <b>Active : {product.active.toString()}</b>
               </Form.Label>
             </Form.Group>
-
+            <Form.Group className="mb-3" controlId="formGroupTitle">
+              <Form.Label>
+                <b>Title : {product.title}</b>
+              </Form.Label>
+            </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPrice">
               <Form.Label>
                 <b>Price</b>
@@ -141,11 +147,14 @@ export default function Page({ params }: page) {
 
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>
-                <b>Full Name</b>
+                <b>
+                  Full Name<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="fullName"
+                required={true}
                 placeholder="Enter Full Name"
                 value={orderDetails.fullName}
                 onChange={(e) =>
@@ -158,11 +167,14 @@ export default function Page({ params }: page) {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupMobileNumber">
               <Form.Label>
-                <b>Mobile Number</b>
+                <b>
+                  Mobile Number<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="mobileNumber"
+                required={true}
                 placeholder="Enter Mobile Number"
                 value={orderDetails.mobileNumber}
                 onChange={(e) =>
@@ -175,11 +187,14 @@ export default function Page({ params }: page) {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupEmail">
               <Form.Label>
-                <b>Email</b>
+                <b>
+                  Email<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="email"
                 name="email"
+                required={true}
                 placeholder="Enter Email"
                 value={orderDetails.email}
                 onChange={(e) =>
@@ -195,12 +210,15 @@ export default function Page({ params }: page) {
             </Form.Label>
             <Form.Group className="mb-3" controlId="formGroupAddress">
               <Form.Label>
-                <b>Address</b>
+                <b>
+                  Address<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="address"
                 placeholder="Enter Address"
+                required={true}
                 value={orderDetails.address}
                 onChange={(e) =>
                   setOrderDetails({
@@ -212,12 +230,15 @@ export default function Page({ params }: page) {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupLandMark">
               <Form.Label>
-                <b>LandMark</b>
+                <b>
+                  LandMark<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="landMark"
                 placeholder="Enter Landmark"
+                required={true}
                 value={orderDetails.landMark}
                 onChange={(e) =>
                   setOrderDetails({
@@ -229,12 +250,15 @@ export default function Page({ params }: page) {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupCity">
               <Form.Label>
-                <b>City</b>
+                <b>
+                  City<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="city"
                 placeholder="Enter City"
+                required={true}
                 value={orderDetails.city}
                 onChange={(e) =>
                   setOrderDetails({
@@ -246,13 +270,16 @@ export default function Page({ params }: page) {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupOrderQuantity">
               <Form.Label>
-                <b>Order Quantity</b>
+                <b>
+                  Order Quantity<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="number"
                 name="orderQuantity"
                 placeholder="Enter Order Quantity"
                 value={orderDetails.orderQuantity.toString()}
+                required={true}
                 onChange={(e) =>
                   setOrderDetails({
                     ...orderDetails,

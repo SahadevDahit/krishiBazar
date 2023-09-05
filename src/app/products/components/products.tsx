@@ -92,11 +92,12 @@ export default function Page() {
           >
             <Form.Group className="mb-3" controlId="formGroupCategoryName">
               <Form.Label>
-                <b>Category Name</b>
+                <b>Category Name<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 as="select"
                 name="title"
+                required={true}
                 onChange={handleFormChange}
                 value={formData.title}
               >
@@ -109,11 +110,12 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupActive">
               <Form.Label>
-                <b>Active</b>
+                <b>Active<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 as="select"
                 name="active"
+                required={true}
                 onChange={handleFormChange}
                 value={formData.active.toString()} // Convert boolean to string
               >
@@ -123,11 +125,12 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupTttle">
               <Form.Label>
-                <b>Title</b>
+                <b>Title<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="title"
+                required={true}
                 placeholder="Enter title"
                 onChange={handleFormChange}
                 value={formData.title}
@@ -135,11 +138,12 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPrice">
               <Form.Label>
-                <b>Price</b>
+                <b>Price<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 type="number"
                 name="price"
+                required={true}
                 placeholder="Enter Price"
                 onChange={handleFormChange}
                 value={formData.price}
@@ -147,11 +151,12 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPriceUnit">
               <Form.Label>
-                <b>Price Unit</b>
+                <b>Price Unit<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="priceUnit"
+                required={true}
                 placeholder="Enter Price Unit"
                 onChange={handleFormChange}
                 value={formData.priceUnit}
@@ -162,11 +167,12 @@ export default function Page() {
               controlId="formGroupMinimumOrderQuantity"
             >
               <Form.Label>
-                <b>Minimum Order Quantity</b>
+                <b>Minimum Order Quantity<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 type="number"
                 name="minimumOrderQuantity"
+                required={true}
                 placeholder="Enter Minimum Order Quantity"
                 onChange={handleFormChange}
                 value={formData.minimumOrderQuantity}
@@ -174,12 +180,13 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupDescription">
               <Form.Label>
-                <b>Description</b>
+                <b>Description<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
                 name="description"
+                required={true}
                 onChange={handleFormChange}
                 value={formData.description}
               />

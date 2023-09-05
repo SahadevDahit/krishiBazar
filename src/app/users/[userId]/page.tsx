@@ -106,7 +106,7 @@ export default function Page({ params }: PageProps) {
               <b>Mobile Number</b>
             </Form.Label>
             <Form.Control
-              type="text"
+              type="number"
               name="mobileNumber"
               placeholder="Enter mobile Number"
               value={formData.mobileNumber}

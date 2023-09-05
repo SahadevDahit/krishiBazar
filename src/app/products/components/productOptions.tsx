@@ -57,11 +57,12 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
           <Form className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded">
             <Form.Group className="mb-3" controlId="formGroupOption">
               <Form.Label>
-                <b>Select Option</b>
+                <b>Select Option<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 as="select"
                 value={selectedOption}
+                required={true}
                 onChange={handleFirstFormSelectChange}
               >
                 <option value="">Select an option</option>
@@ -73,12 +74,13 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>
-                <b>Name</b>
+                <b>Name<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter option Name..."
                 value={optionName}
+                required={true}
                 onChange={(e) => setOptionName(e.target.value)}
               />
             </Form.Group>
@@ -120,12 +122,13 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>
-                <b>Value</b>
+                <b>Value<span style={{color:"red"}}>*</span></b>
               </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter option Values..."
                 value={optionValue}
+                required={true}
                 onChange={(e) => setOptionValue(e.target.value)}
               />
             </Form.Group>

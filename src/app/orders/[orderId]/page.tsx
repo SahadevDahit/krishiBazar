@@ -12,6 +12,7 @@ interface page {
 
 // Define an interface for the product data
 interface Product {
+  title: string;
   categoryName: string;
   active: boolean;
   price: number;
@@ -36,6 +37,7 @@ interface Order {
 export default function Page({ params }: page) {
   // Create an instance of the Product interface with default values
   const defaultProduct: Product = {
+    title: "Product Title",
     categoryName: "Vegetables",
     active: true,
     price: 0,
@@ -86,7 +88,11 @@ export default function Page({ params }: page) {
                 <b>Active : {product?.active.toString()}</b>
               </Form.Label>
             </Form.Group>
-
+            <Form.Group className="mb-3" controlId="formGroupTitle">
+              <Form.Label>
+                <b>Title : {product?.title}</b>
+              </Form.Label>
+            </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPrice">
               <Form.Label>
                 <b>Price : {product?.price}</b>

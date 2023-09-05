@@ -16,8 +16,8 @@ interface Product {
 
 export default function Page() {
   const [formData, setFormData] = useState<Product>({
+    title: "Product Title",
     active: true,
-    title: "",
     description: "",
     price: 0,
     priceUnit: "",
@@ -119,6 +119,20 @@ export default function Page() {
               <option value="false">No</option>
             </Form.Control>
           </Form.Group>
+         <Form.Group className="mb-3" controlId="formGroupTitle">
+  <Form.Label>
+    <b>Title</b>
+  </Form.Label>
+  <Form.Control
+    type="text"
+    name="title"
+    placeholder="Enter Title"
+    required={true}
+    value={formData.title}
+     onChange={handleInputChange}
+  />
+</Form.Group>
+
           <Form.Group className="mb-3" controlId="formGroupPrice">
             <Form.Label>
               <b>Price</b>

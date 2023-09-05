@@ -78,6 +78,7 @@ export default function Home() {
                     type="text"
                     placeholder="Enter search key..."
                     value={searchValue}
+                    required={true}
                     onChange={(e) => setSearchValue(e.target.value)}
                   />
                 </Form.Group>

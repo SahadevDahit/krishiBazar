@@ -10,6 +10,7 @@ interface page {
   };
 }
 interface Product {
+  title: string;
   categoryName: string;
   active: boolean;
   price: number;
@@ -32,6 +33,7 @@ interface Order {
 }
 export default function Page({ params }: page) {
   const defaultProduct: Product = {
+    title: "Product Title",
     categoryName: "Vegetables",
     active: true,
     price: 0,
@@ -99,7 +101,11 @@ export default function Page({ params }: page) {
                 <b>Active : {product?.active.toString()}</b>
               </Form.Label>
             </Form.Group>
-
+            <Form.Group className="mb-3" controlId="formGroupTitle">
+              <Form.Label>
+                <b>Title : {product?.title}</b>
+              </Form.Label>
+            </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPrice">
               <Form.Label>
                 <b>Price : {product?.price}</b>
@@ -126,7 +132,10 @@ export default function Page({ params }: page) {
           </Form>
         </div>
         <div className={styles.form}>
-          <Form className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded" onSubmit={handleOrderFormSubmit}>
+          <Form
+            className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded"
+            onSubmit={handleOrderFormSubmit}
+          >
             <h3>
               <u>Order Details</u>
             </h3>

@@ -91,23 +91,29 @@ export default function Page() {
 
           <Form.Group className="mb-3" controlId="formGroupFirstName">
             <Form.Label>
-              <b>First Name</b>
+              <b>
+                First Name<span style={{ color: "red" }}>*</span>
+              </b>
             </Form.Label>
             <Form.Control
               type="text"
               name="firstName"
               placeholder="Enter First Name"
+              required={true}
               value={formData.firstName}
               onChange={handleInputChange}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formGroupLastName">
             <Form.Label>
-              <b>Last Name</b>
+              <b>
+                Last Name<span style={{ color: "red" }}>*</span>
+              </b>
             </Form.Label>
             <Form.Control
               type="text"
               name="lastName"
+              required={true}
               placeholder="Enter Last Name"
               value={formData.lastName}
               onChange={handleInputChange}
@@ -115,11 +121,14 @@ export default function Page() {
           </Form.Group>
           <Form.Group className="mb-3" controlId="formGroupMobileNumber">
             <Form.Label>
-              <b>Mobile Number</b>
+              <b>
+                Mobile Number<span style={{ color: "red" }}>*</span>
+              </b>
             </Form.Label>
             <Form.Control
               type="Number"
               name="mobileNumber"
+              required={true}
               placeholder="Enter mobile Number"
               value={formData.mobileNumber}
               onChange={handleInputChange}

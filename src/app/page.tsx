@@ -105,9 +105,9 @@ export default function Home() {
               </div>
               <Card.Body className="mx-auto">
                 <Card.Title>{product.productName}</Card.Title>
-                <h4>
+                <h6>
                   <b>NPR {product.price}</b>
-                </h4>
+                </h6>
                 <div className="d-sm-flex justify-content-between">
                   <Button
                     variant="primary"

@@ -68,7 +68,7 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
       </h1>
       <div className="container-fluid d-sm-block d-md-inline-block d-lg-flex justify-content-around">
         <div>
-          <Form className="border rounded-3 p-3 mb-4">
+          <Form className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded">
             <Form.Group className="mb-3" controlId="formGroupOption1">
               <Form.Label>
                 <b>Select Option 1</b>
@@ -114,7 +114,7 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
           </Form>
         </div>
         <div className="mb-3">
-          <Form className="border rounded-3 p-3 mb-4">
+          <Form className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded">
             <Form.Group className="mb-3" controlId="formGroupOption2">
               <Form.Label>
                 <b>Select Option 2</b>

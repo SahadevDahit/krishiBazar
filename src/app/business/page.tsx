@@ -22,7 +22,7 @@ interface Business {
 interface BusinessFormData {
   name: string;
   address: string;
-  phoneNumber: string;
+  phoneNumber: number;
 }
 
 export default function Page() {
@@ -38,7 +38,7 @@ export default function Page() {
       ownerId: "1",
       name: "Business A",
       address: "123 Main St",
-      phoneNumber: "123-456-7890",
+      phoneNumber: 1234567890,
     },
     // ... (other default data)
   ];
@@ -48,7 +48,27 @@ export default function Page() {
     address: "",
     phoneNumber: "",
   });
+  const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(
+    null
+  );
+  const handleBusinessClick = (businessId: string) => {
+    // Find the clicked business from the defaultBusinessData array
+    const clickedBusiness = defaultBusinessData.find(
+      (business) => business.businessId === businessId
+    );
 
+    if (clickedBusiness) {
+      // Set the selectedBusiness state with the clicked business data
+      setSelectedBusiness(clickedBusiness);
+
+      // Populate the form fields with the clicked business data
+      setBusinessForm({
+        name: clickedBusiness.name,
+        address: clickedBusiness.address,
+        phoneNumber: clickedBusiness.phoneNumber,
+      });
+    }
+  };
   const handleBusinessFormChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
@@ -60,9 +80,6 @@ export default function Page() {
   };
   const handleRowClick = (orderId: string) => {
     window.location.href += `/${orderId}`;
-  };
-  const handleBusinessClick = (businessId: string) => {
-    // Handle the click event for the business row if needed
   };
 
   const handleSubmitBusinessForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -84,36 +101,45 @@ export default function Page() {
           >
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>
-                <b>Name</b>
+                <b>
+                  Name<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter Name"
                 name="name"
+                required={true}
                 value={businessForm.name}
                 onChange={handleBusinessFormChange}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupAddress">
               <Form.Label>
-                <b>Address</b>
+                <b>
+                  Address<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter Address"
                 name="address"
+                required={true}
                 value={businessForm.address}
                 onChange={handleBusinessFormChange}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPhoneNumber">
               <Form.Label>
-                <b>Phone Number</b>
+                <b>
+                  Phone Number<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Enter Number"
                 name="phoneNumber"
+                required={true}
                 value={businessForm.phoneNumber}
                 onChange={handleBusinessFormChange}
               />
@@ -176,7 +202,7 @@ export default function Page() {
         </div>
       </div>
       <hr className="mx-5" />
-      <h2 className="text-center">Business</h2>
+      <h2 className="text-center">Business Orders</h2>
       <Table
         responsive="sm"
         className="container mt-3 shadow-lg p-3 bg-white rounded"

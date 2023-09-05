@@ -36,8 +36,26 @@ export default function Page() {
     // Add more category data objects as needed
   ]);
 
-  const handleRowClick = (name: string) => {
-    // Handle row click here
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
+
+  const handleRowClick = (categoryName: string) => {
+    // Find the clicked category from the defaultCategoryData array
+    const clickedCategory = defaultCategoryData.find(
+      (category) => category.name === categoryName
+    );
+
+    if (clickedCategory) {
+      // Set the selectedCategory state with the clicked category data
+      setSelectedCategory(clickedCategory);
+
+      // Populate the form fields with the clicked category data
+      setFormData({
+        name: clickedCategory.name,
+        parentId: clickedCategory.parentId,
+      });
+    }
   };
 
   const handleNameChange = (value: string) => {
@@ -78,23 +96,29 @@ export default function Page() {
           >
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>
-                <b>Name</b>
+                <b>
+                  Name<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="name"
                 placeholder="Enter Name"
+                required={true}
                 value={formData.name}
                 onChange={(e) => handleNameChange(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupParentId">
               <Form.Label>
-                <b>Parent ID</b>
+                <b>
+                  Parent ID<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="parentId"
+                required={true}
                 placeholder="Enter Parent ID"
                 value={formData.parentId}
                 onChange={(e) => handleParentIdChange(e.target.value)}
@@ -126,7 +150,10 @@ export default function Page() {
             </thead>
             <tbody>
               {defaultCategoryData.map((category, index) => (
-                <tr key={index} onClick={() => handleRowClick(category.name)}>
+                <tr
+                  key={index}
+                  onClick={() => handleRowClick(category.name)}
+                >
                   <td>{index + 1}</td>
                   <td>{category.name}</td>
                   <td>{category.parentId}</td>
