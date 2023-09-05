@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useStore } from "./zustLand/store";
 // Define the Product interface
 interface Product {
   productId: string;
@@ -13,6 +14,8 @@ interface Product {
 }
 
 export default function Home() {
+  const { businessId } = useStore();
+  console.log("businessId " + businessId);
   // Sample product data (using the same image URL for all products)
   const products: Product[] = [
     {

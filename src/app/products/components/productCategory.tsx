@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import styles from "./styles/productCategory.module.css";
@@ -11,7 +11,12 @@ interface Category {
 }
 
 export default function Page() {
-  const defaultCategoryData: Category[] = [
+  const [formData, setFormData] = useState<Category>({
+    name: "",
+    parentId: "",
+  });
+
+  const [defaultCategoryData, setDefaultCategoryData] = useState<Category[]>([
     {
       name: "Category A",
       parentId: "1",
@@ -29,10 +34,36 @@ export default function Page() {
       parentId: "2",
     },
     // Add more category data objects as needed
-  ];
+  ]);
 
   const handleRowClick = (name: string) => {
-   
+    // Handle row click here
+  };
+
+  const handleNameChange = (value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      name: value,
+    }));
+  };
+
+  const handleParentIdChange = (value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      parentId: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission here, you can access form data from the formData object
+    console.log(formData);
+
+    // Reset the form after submission
+    setFormData({
+      name: "",
+      parentId: "",
+    });
   };
 
   return (
@@ -41,18 +72,33 @@ export default function Page() {
 
       <div className="container d-sm-block d-md-flex justify-content-around">
         <div className={styles.form}>
-          <Form className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded">
+          <Form
+            className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded"
+            onSubmit={handleSubmit}
+          >
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>
                 <b>Name</b>
               </Form.Label>
-              <Form.Control type="text" placeholder="Enter Name" />
+              <Form.Control
+                type="text"
+                name="name"
+                placeholder="Enter Name"
+                value={formData.name}
+                onChange={(e) => handleNameChange(e.target.value)}
+              />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupParentId">
               <Form.Label>
                 <b>Parent ID</b>
               </Form.Label>
-              <Form.Control type="text" placeholder="Enter Parent ID" />
+              <Form.Control
+                type="text"
+                name="parentId"
+                placeholder="Enter Parent ID"
+                value={formData.parentId}
+                onChange={(e) => handleParentIdChange(e.target.value)}
+              />
             </Form.Group>
             <Button
               variant="primary"
@@ -64,7 +110,6 @@ export default function Page() {
           </Form>
         </div>
         <div>
-         
           <Table
             responsive="sm"
             className="container mt-3 shadow-lg p-3 bg-white rounded"

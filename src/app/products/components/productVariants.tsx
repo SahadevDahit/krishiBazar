@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
-// Define the ProductVariants interface
+
 interface ProductVariants {
   productVariantId: string;
   productVariant1: string;
@@ -11,12 +11,36 @@ interface ProductVariants {
   productVariant2: string;
   values2: string;
 }
+interface ProductVariant1 {
+  productVariantId: string;
+  productVariant1: string;
+  values1: string;
+}
+
+interface ProductVariant2 {
+  productVariantId: string;
+  productVariant2: string;
+  values2: string;
+}
 
 interface ProductOptionsProps {
-  productId: string; // Define productId as a prop
+  productId: string;
 }
 
 export default function ProductOptions({ productId }: ProductOptionsProps) {
+  // Define states for each product variant form
+  const [variant1, setVariant1] = useState<ProductVariant1>({
+    productVariantId: "",
+    productVariant1: "",
+    values1: "",
+  });
+
+  const [variant2, setVariant2] = useState<ProductVariant2>({
+    productVariantId: "",
+    productVariant2: "",
+    values2: "",
+  });
+
   const productVariant: ProductVariants[] = [
     {
       productVariantId: "dfs3", // Unique ID
@@ -29,6 +53,14 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
   const handleRowClick = (productVariantId: string) => {
     window.location.href += `/productVariants/${productVariantId}`;
   };
+
+  const handleAddVariant = () => {
+    // You can update the state or perform other actions
+    console.log("Added Variant 1:", variant1);
+
+    console.log("Added Variant 2:", variant2);
+  };
+
   return (
     <>
       <h1 className="text-center">
@@ -37,11 +69,20 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
       <div className="container-fluid d-sm-block d-md-inline-block d-lg-flex justify-content-around">
         <div>
           <Form className="border rounded-3 p-3 mb-4">
-            <Form.Group className="mb-3" controlId="formGroupOption">
+            <Form.Group className="mb-3" controlId="formGroupOption1">
               <Form.Label>
-                <b>Select Option</b>
+                <b>Select Option 1</b>
               </Form.Label>
-              <Form.Control as="select">
+              <Form.Control
+                as="select"
+                value={variant1.productVariant1}
+                onChange={(e) =>
+                  setVariant1({
+                    ...variant1,
+                    productVariant1: e.target.value,
+                  })
+                }
+              >
                 <option value="">Select an option</option>
                 {/* Replace these options with your actual options */}
                 <option value="Option 1">Option 1</option>
@@ -49,11 +90,20 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
                 <option value="Option 3">Option 3</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formGroupOption">
+            <Form.Group className="mb-3" controlId="formGroupValues1">
               <Form.Label>
-                <b>Values</b>
+                <b>Values 1</b>
               </Form.Label>
-              <Form.Control as="select">
+              <Form.Control
+                as="select"
+                value={variant1.values1}
+                onChange={(e) =>
+                  setVariant1({
+                    ...variant1,
+                    values1: e.target.value,
+                  })
+                }
+              >
                 <option value="">Values</option>
                 {/* Replace these options with your actual options */}
                 <option value="values 1">Values 1</option>
@@ -65,33 +115,56 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
         </div>
         <div className="mb-3">
           <Form className="border rounded-3 p-3 mb-4">
-            <Form.Group className="mb-3" controlId="formGroupOption">
+            <Form.Group className="mb-3" controlId="formGroupOption2">
               <Form.Label>
-                <b>Select Option</b>
+                <b>Select Option 2</b>
               </Form.Label>
-              <Form.Control as="select">
+              <Form.Control
+                as="select"
+                value={variant2.productVariant2}
+                onChange={(e) =>
+                  setVariant2({
+                    ...variant2,
+                    productVariant2: e.target.value,
+                  })
+                }
+              >
                 <option value="">Select an option</option>
                 {/* Replace these options with your actual options */}
-                <option value="Option 1">Option 1</option>
-                <option value="Option 2">Option 2</option>
-                <option value="Option 3">Option 3</option>
+                <option value="Option A">Option A</option>
+                <option value="Option B">Option B</option>
+                <option value="Option C">Option C</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formGroupOption">
+            <Form.Group className="mb-3" controlId="formGroupValues2">
               <Form.Label>
-                <b>Values</b>
+                <b>Values 2</b>
               </Form.Label>
-              <Form.Control as="select">
+              <Form.Control
+                as="select"
+                value={variant2.values2}
+                onChange={(e) =>
+                  setVariant2({
+                    ...variant2,
+                    values2: e.target.value,
+                  })
+                }
+              >
                 <option value="">Values</option>
                 {/* Replace these options with your actual options */}
-                <option value="values 1">Values 1</option>
-                <option value="values 2">Values 2</option>
-                <option value="values 3">Values 3</option>
+                <option value="values X">Values X</option>
+                <option value="values Y">Values Y</option>
+                <option value="values Z">Values Z</option>
               </Form.Control>
             </Form.Group>
           </Form>
-          <Button variant="primary" type="submit" className="mx-auto">
-            Add
+          <Button
+            variant="primary"
+            type="button"
+            className="mb-2 mb-md-0 mt-md-2 mx-1"
+            onClick={handleAddVariant}
+          >
+            Add Variant
           </Button>
         </div>
       </div>

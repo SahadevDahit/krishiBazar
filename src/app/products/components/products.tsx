@@ -77,13 +77,19 @@ export default function Page() {
       [name]: name === "active" ? value === "true" : value, // Convert the string "true" or "false" to boolean
     });
   };
-
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(formData);
+  };
   return (
     <>
       <h2 className="text-center py-3">Product Information</h2>
       <div className="container-fluid d-sm-block d-md-inline-block d-lg-flex justify-content-around">
         <div className={styles.form}>
-          <Form className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded">
+          <Form
+            className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded"
+            onSubmit={handleSubmit}
+          >
             <Form.Group className="mb-3" controlId="formGroupCategoryName">
               <Form.Label>
                 <b>Category Name</b>
@@ -115,7 +121,18 @@ export default function Page() {
                 <option value="false">No</option>
               </Form.Control>
             </Form.Group>
-
+            <Form.Group className="mb-3" controlId="formGroupTttle">
+              <Form.Label>
+                <b>Title</b>
+              </Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+                placeholder="Enter title"
+                onChange={handleFormChange}
+                value={formData.title}
+              />
+            </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPrice">
               <Form.Label>
                 <b>Price</b>

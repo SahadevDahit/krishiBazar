@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import styles from "./page.module.css";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
@@ -49,9 +49,21 @@ export default function Home() {
     },
     // Add more user data objects as needed
   ];
+
+  // State variable for search value
+  const [searchValue, setSearchValue] = useState<string>("");
+
   const handleRowClick = (userId: string) => {
     window.location.href += `/${userId}`;
   };
+
+  // Event handler for search button click
+  const handleSearchClick = () => {
+    // Log the search value
+    console.log("Search Value:", searchValue);
+    setSearchValue("");
+  };
+
   return (
     <>
       <div className={styles.main}>
@@ -62,10 +74,15 @@ export default function Home() {
             <Form className="d-flex align-items-center shadow-lg p-3 bg-white rounded">
               <div className="input-group mb-1 flex-grow-1">
                 <Form.Group className="" controlId="formBasicPassword">
-                  <Form.Control type="text" placeholder="Enter search key..." />
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter search key..."
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                  />
                 </Form.Group>
                 <div className="input-group-append">
-                  <Button variant="primary">
+                  <Button variant="primary" onClick={handleSearchClick}>
                     <FontAwesomeIcon icon={faSearch} />
                   </Button>
                 </div>

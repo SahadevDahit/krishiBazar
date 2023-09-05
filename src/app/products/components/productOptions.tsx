@@ -4,16 +4,48 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 interface ProductOption {
-  productOptionsId: string; // Change productOptionsId to string
+  productOptionsId: string;
   name: string;
 }
 
 interface ProductOptionsProps {
-  productId: string; // Define productId as a prop
+  productId: string;
 }
 
 export default function ProductOptions({ productId }: ProductOptionsProps) {
   const [optionName, setOptionName] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [optionValue, setOptionValue] = useState<string>("");
+
+  const handleAddOption = () => {
+    // Add your logic to handle adding an option here
+
+    console.log("Added Option:", optionName);
+    setOptionName("");
+  };
+
+  const handleDeleteOption = () => {
+    // Add your logic to handle deleting an option here
+    if (selectedOption) {
+      // You can remove the selected option from your state or perform other actions
+      console.log("Deleted Option:", selectedOption);
+      setSelectedOption("");
+    }
+  };
+
+  const handleAddValues = () => {
+    // Add your logic to handle adding values here
+    if (selectedOption) {
+      // You can add the value to your state or perform other actions
+      console.log("Added Value:", optionValue);
+      setOptionValue("");
+    }
+  };
+
+  const handleFirstFormSelectChange = (e: any) => {
+    // Update the selectedOption state when an option is selected in the first form
+    setSelectedOption(e.target.value);
+  };
 
   return (
     <div>
@@ -27,7 +59,11 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
               <Form.Label>
                 <b>Select Option</b>
               </Form.Label>
-              <Form.Control as="select">
+              <Form.Control
+                as="select"
+                value={selectedOption}
+                onChange={handleFirstFormSelectChange}
+              >
                 <option value="">Select an option</option>
                 {/* Replace these options with your actual options */}
                 <option value="Option 1">Option 1</option>
@@ -50,13 +86,15 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
               variant="primary"
               type="button"
               className="mb-2 mb-md-0 mt-md-2 mx-1"
+              onClick={handleAddOption}
             >
               Add Option
             </Button>
             <Button
-              variant="primary"
+              variant="danger"
               type="button"
               className="mb-2 mb-md-0 mt-md-2 mx-1"
+              onClick={handleDeleteOption}
             >
               Delete Option
             </Button>
@@ -66,15 +104,13 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
           <Form className="border rounded-3 p-3 mb-4 shadow-lg p-3 bg-white rounded">
             <Form.Group className="mb-1" controlId="formGroupOption">
               <Form.Label>
-                <b>Selected Option</b>
+                <b>Selected Option {selectedOption}</b>
               </Form.Label>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formGroupOption">
-              <Form.Label>
-                <b>Values</b>
-              </Form.Label>
-              <Form.Control as="select">
+              <Form.Control
+                as="select"
+                value={selectedOption}
+                onChange={(e) => setSelectedOption(e.target.value)}
+              >
                 <option value="">Values</option>
                 {/* Replace these options with your actual options */}
                 <option value="values 1">Values 1</option>
@@ -86,12 +122,18 @@ export default function ProductOptions({ productId }: ProductOptionsProps) {
               <Form.Label>
                 <b>Value</b>
               </Form.Label>
-              <Form.Control type="text" placeholder="Enter option Values..." />
+              <Form.Control
+                type="text"
+                placeholder="Enter option Values..."
+                value={optionValue}
+                onChange={(e) => setOptionValue(e.target.value)}
+              />
             </Form.Group>
             <Button
               variant="primary"
               type="button"
               className="mb-2 mb-md-0 mt-md-2 mx-1"
+              onClick={handleAddValues}
             >
               Add Values
             </Button>
