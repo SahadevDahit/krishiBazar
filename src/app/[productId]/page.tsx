@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import styles from "./page.module.css";
 import Image from "next/image";
-
+import axios from "axios";
+import { useStore } from "../zustLand/store";
 interface page {
   params: {
     productId: string;
@@ -14,7 +15,7 @@ interface page {
 // Define an interface for the product data
 interface Product {
   title: string;
-  categoryName: string;
+  categoryId: string;
   active: boolean;
   price: number;
   priceUnit: string;
@@ -34,17 +35,20 @@ interface OrderDetails {
 }
 
 export default function Page({ params }: page) {
+  const { businessId } = useStore();
+
   // Create an instance of the Product interface with default values
   const product: Product = {
-    title: "Product Title",
-    categoryName: "Vegetables",
+    title: "",
+    categoryId: "",
     active: true,
     price: 0, // Set your default price value here
-    priceUnit: "kg",
-    minimumOrderQuantity: 5, // Set your default minimum order quantity here
-    description: "Best in Dhangadhi",
+    priceUnit: "",
+    minimumOrderQuantity: 0, // Set your default minimum order quantity here
+    description: "",
   };
-
+  const [productInfo, setProductInfo] = useState<Product>(product);
+  const [categoryName, setCategoryName] = useState<string>("");
   // Create state variables for order details
   const [orderDetails, setOrderDetails] = useState<OrderDetails>({
     fullName: "",
@@ -55,14 +59,104 @@ export default function Page({ params }: page) {
     city: "",
     orderQuantity: 0,
   });
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.server}/api/v1/business/${businessId}/products/${params.productId}`
+        );
+        if (response.status === 200 || response.status === 201) {
+          // Update the formData state with the API response data
+          setProductInfo(response.data);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching product data:", error);
+      }
+    };
+    fetchProduct();
+  }, []);
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.server}/api/v1/product-categories/${productInfo.categoryId}`
+        );
+        if (response.status === 200 || response.status === 201) {
+          // Update the formData state with the API response data
+          setCategoryName(response.data.name);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching product data:", error);
+      }
+    };
+    fetchCategory();
+  }, [product]);
+
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (
+      Number(productInfo.minimumOrderQuantity) >
+      Number(orderDetails.orderQuantity)
+    ) {
+      alert("OrderQuantity should be more than minimum order quantity");
+      return;
+    }
+    // Convert quantity and price to numbers
+    const quantity = Number(orderDetails.orderQuantity);
+    const price = Number(productInfo.price);
+    const bid = Number(businessId);
 
-    // You can access the order details in the orderDetails state
-    console.log("Order Details:", orderDetails);
+    const order = {
+      contactData: {
+        fullName: `${orderDetails.fullName}`,
+        mobileNumber: `${orderDetails.mobileNumber}`,
+        email: `${orderDetails.email}`,
+      },
+      deliveryAddress: {
+        address: `${orderDetails.address}`,
+        landMark: `${orderDetails.landMark}`,
+        city: `${orderDetails.city}`,
+      },
+      items: [
+        {
+          bid: bid,
+          productId: `${params.productId}`,
+          quantity: quantity,
+          price: price,
+        },
+      ],
+    };
 
-    // Perform any other actions, such as sending data to a server
+    try {
+      const response = await axios.post(
+        `${process.env.server}/api/v1/orders`,
+        order
+      );
+      if (response.status === 200 || response.status === 201) {
+        // Update the formData state with the API response data
+        console.log("sucess");
+        alert("Ordered Placed SucessFully");
+      } else {
+        console.error(
+          "Server responded with an unexpected status:",
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      alert("unable to Order");
+    }
   };
   return (
     <>
@@ -74,24 +168,24 @@ export default function Page({ params }: page) {
               <Image
                 src="/product.svg" // Replace with your image path
                 alt="User Image"
-                width={100} // Set the desired width
-                height={100} // Set the desired height
+                width={150} // Set the desired width
+                height={150} // Set the desired height
               />
             </div>
 
             <Form.Group className="mb-3" controlId="formGroupCategoryName">
               <Form.Label>
-                <b>Category Name : {product.categoryName}</b>
+                <b>Category Name : {categoryName}</b>
               </Form.Label>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupActive">
               <Form.Label>
-                <b>Active : {product.active.toString()}</b>
+                <b>Active : {productInfo.active.toString()}</b>
               </Form.Label>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupTitle">
               <Form.Label>
-                <b>Title : {product.title}</b>
+                <b>Title : {productInfo.title}</b>
               </Form.Label>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPrice">
@@ -101,14 +195,14 @@ export default function Page({ params }: page) {
               <Form.Control
                 type="text"
                 name="price"
-                value={product.price.toString()}
+                value={productInfo.price.toString()}
                 placeholder="Enter Price"
                 readOnly
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPriceUnit">
               <Form.Label>
-                <b>Price Unit : {product.priceUnit}</b>
+                <b>Price Unit : {productInfo.priceUnit}</b>
               </Form.Label>
             </Form.Group>
             <Form.Group
@@ -118,19 +212,19 @@ export default function Page({ params }: page) {
               <Form.Label>
                 <b>
                   Minimum Order Quantity :{" "}
-                  {product.minimumOrderQuantity.toString()}
+                  {productInfo.minimumOrderQuantity.toString()}
                 </b>
               </Form.Label>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupDescription">
               <Form.Label>
-                <b>Description : {product.description}</b>
+                <b>Description : {productInfo.description}</b>
               </Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
                 name="description"
-                value={product.description}
+                value={productInfo.description}
                 disabled={true}
               />
             </Form.Group>
@@ -155,7 +249,7 @@ export default function Page({ params }: page) {
                 type="text"
                 name="fullName"
                 required={true}
-                placeholder="Enter Full Name"
+                placeholder="Enter Full Name:- firstName LastName"
                 value={orderDetails.fullName}
                 onChange={(e) =>
                   setOrderDetails({

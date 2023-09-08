@@ -1,24 +1,41 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
-
+import axios from "axios";
 // Define the order interface with the "confirmed" property
 interface Order {
-  orderId: string;
+  id: string;
   status: string;
   confirmed: boolean; // Add the "confirmed" property
 }
 
-// Sample list of orders with the "confirmed" property
-const orders: Order[] = [
-  { orderId: "1", status: "confirmed", confirmed: true },
-  { orderId: "2", status: "pending", confirmed: false },
-  { orderId: "3", status: "shipped", confirmed: true },
-];
 
 export default function OrderTable() {
-  const handleRowClick = (orderId: string) => {
-    window.location.href += `/${orderId}`;
+const [orders, setOrders] = useState<Order[]>();
+
+  useEffect(() => {
+    const fetchorders = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.server}/api/v1/users/4825c6e9-6573-4ce2-bd6c-16340b16f003/orders`
+        );
+        if (response.status === 200 || response.status === 201) {
+          setOrders(response.data);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching users:", error);
+      }
+    };
+    fetchorders();
+  }, []);
+
+  const handleRowClick = (id: string) => {
+    window.location.href += `/${id}`;
   };
   return (
     <>
@@ -39,16 +56,12 @@ export default function OrderTable() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order, index: number) => (
-            <tr
-              key={order.orderId}
-              onClick={() => handleRowClick(order.orderId)}
-            >
+          {orders?.map((order, index: number) => (
+            <tr key={order.id} onClick={() => handleRowClick(order.id)}>
               <td>{index + 1}</td>
-              <td>{order.orderId}</td>
+              <td>{order.id}</td>
               <td>{order.status}</td>
-              <td>{order.confirmed ? "Yes" : "No"}</td>{" "}
-              {/* Display "Yes" or "No" based on the "confirmed" property */}
+              <td>{order.confirmed ? "Yes" : "No"}</td>
             </tr>
           ))}
         </tbody>

@@ -1,62 +1,45 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import styles from "./styles/productCategory.module.css";
 import Table from "react-bootstrap/Table";
+import axios from "axios";
 
 interface Category {
+  id: string;
   name: string;
-  parentId: string;
 }
 
 export default function Page() {
   const [formData, setFormData] = useState<Category>({
+    id: "",
     name: "",
-    parentId: "",
   });
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  const [defaultCategoryData, setDefaultCategoryData] = useState<Category[]>([
-    {
-      name: "Category A",
-      parentId: "1",
-    },
-    {
-      name: "Category B",
-      parentId: "1",
-    },
-    {
-      name: "Subcategory X",
-      parentId: "2",
-    },
-    {
-      name: "Subcategory Y",
-      parentId: "2",
-    },
-    // Add more category data objects as needed
-  ]);
-
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
-
-  const handleRowClick = (categoryName: string) => {
-    // Find the clicked category from the defaultCategoryData array
-    const clickedCategory = defaultCategoryData.find(
-      (category) => category.name === categoryName
-    );
-
-    if (clickedCategory) {
-      // Set the selectedCategory state with the clicked category data
-      setSelectedCategory(clickedCategory);
-
-      // Populate the form fields with the clicked category data
-      setFormData({
-        name: clickedCategory.name,
-        parentId: clickedCategory.parentId,
-      });
-    }
-  };
+  useEffect(() => {
+    const categories = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.server}/api/v1/product-categories`
+        );
+        if (response.status === 200 || response.status === 201) {
+          // Update the users state with the API response data
+          setCategories(response?.data);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching users:", error);
+        alert("Error in fetching user data");
+      }
+    };
+    categories();
+  }, []);
 
   const handleNameChange = (value: string) => {
     setFormData((prevData) => ({
@@ -65,22 +48,38 @@ export default function Page() {
     }));
   };
 
-  const handleParentIdChange = (value: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      parentId: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here, you can access form data from the formData object
-    console.log(formData);
+    try {
+      const { name } = formData;
 
+      // Make a POST request to the API endpoint
+      const response = await axios.post(
+        `${process.env.server}/api/v1/product-categories`,
+        { name }
+      );
+
+      // Check if the request was successful (HTTP status code 200)
+      if (response.status === 200 || 201) {
+        // Handle success, e.g., show a success message
+        console.log("Category created successfully!");
+        alert("category created sucessfully");
+        setFormData({
+          id: "",
+          name: "",
+        });
+      } else {
+        // Handle other HTTP status codes if necessary
+        console.error("Category creation failed:", response.statusText);
+      }
+    } catch (error) {
+      // Handle any network or request errors
+      console.error("An error occurred:", error);
+    }
     // Reset the form after submission
     setFormData({
+      id: "",
       name: "",
-      parentId: "",
     });
   };
 
@@ -109,21 +108,7 @@ export default function Page() {
                 onChange={(e) => handleNameChange(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formGroupParentId">
-              <Form.Label>
-                <b>
-                  Parent ID<span style={{ color: "red" }}>*</span>
-                </b>
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="parentId"
-                required={true}
-                placeholder="Enter Parent ID"
-                value={formData.parentId}
-                onChange={(e) => handleParentIdChange(e.target.value)}
-              />
-            </Form.Group>
+
             <Button
               variant="primary"
               type="submit"
@@ -145,18 +130,13 @@ export default function Page() {
               <tr>
                 <th>#</th>
                 <th>Name</th>
-                <th>Parent ID</th>
               </tr>
             </thead>
             <tbody>
-              {defaultCategoryData.map((category, index) => (
-                <tr
-                  key={index}
-                  onClick={() => handleRowClick(category.name)}
-                >
+              {categories?.map((category, index) => (
+                <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{category.name}</td>
-                  <td>{category.parentId}</td>
                 </tr>
               ))}
             </tbody>

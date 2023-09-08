@@ -1,12 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useStore } from "../../zustLand/store";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import styles from "./styles/products.module.css";
 import Table from "react-bootstrap/Table";
-
+import axios from "axios";
 interface Product {
-  productId: string;
+  id: string;
+  categoryId: string;
   active: boolean;
   title: string;
   description: string;
@@ -14,50 +16,19 @@ interface Product {
   priceUnit: string;
   minimumOrderQuantity: number;
 }
-
+interface Category {
+  id: string;
+  name: string;
+}
 export default function Page() {
-  const defaultProductData: Product[] = [
-    {
-      productId: "101",
-      active: true,
-      title: "Product A",
-      description: "Description A",
-      price: 10,
-      priceUnit: "USD",
-      minimumOrderQuantity: 5,
-    },
-    {
-      productId: "102",
-      active: true,
-      title: "Product B",
-      description: "Description B",
-      price: 15,
-      priceUnit: "USD",
-      minimumOrderQuantity: 10,
-    },
-    {
-      productId: "201",
-      active: true,
-      title: "Subproduct X",
-      description: "Description X",
-      price: 8,
-      priceUnit: "USD",
-      minimumOrderQuantity: 3,
-    },
-    {
-      productId: "202",
-      active: true,
-      title: "Subproduct Y",
-      description: "Description Y",
-      price: 12,
-      priceUnit: "USD",
-      minimumOrderQuantity: 7,
-    },
-    // Add more product data objects as needed
-  ];
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const { businessId } = useStore();
 
   const [formData, setFormData] = useState<Product>({
-    productId: "",
+    id: "",
+    categoryId: "",
     active: true,
     title: "",
     description: "",
@@ -65,21 +36,131 @@ export default function Page() {
     priceUnit: "",
     minimumOrderQuantity: 0,
   });
+  useEffect(() => {
+    const categories = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.server}/api/v1/product-categories`
+        );
+        if (response.status === 200 || response.status === 201) {
+          // Update the users state with the API response data
+          setCategories(response?.data);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching users:", error);
+        alert("Error in fetching user data");
+      }
+    };
+    const products = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.server}/api/v1/business/${businessId}/products`
+        );
+        if (response.status === 200 || response.status === 201) {
+          // Update the users state with the API response data
+          setProducts(response?.data);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching users:", error);
+        alert("Error in fetching user data");
+      }
+    };
+    categories();
+    products();
+  }, []);
 
-  const handleRowClick = (productId: string) => {
-    window.location.href = `/products/${productId}`;
+  const handleRowClick = (id: string) => {
+    window.location.href = `/products/${id}`;
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: name === "active" ? value === "true" : value, // Convert the string "true" or "false" to boolean
-    });
+
+    if (name === "category") {
+      // Find the selected category object by its name
+      const selectedCategory = categories.find(
+        (category) => category.name === value
+      );
+
+      if (selectedCategory) {
+        // Set the categoryId in the formData to the selected category's id
+        setFormData({
+          ...formData,
+          categoryId: selectedCategory.id,
+        });
+      }
+    } else if (name === "price" || name === "minimumOrderQuantity") {
+      // Ensure that the price and minimumOrderQuantity values are numbers
+      setFormData({
+        ...formData,
+        [name]: parseFloat(value), // Parse the input value to a float
+      });
+    } else if (name === "title" || name === "description") {
+      // Handle title and description fields as text
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    } else {
+      // Handle other form inputs as usual
+      setFormData({
+        ...formData,
+        [name]: name === "active" ? value === "true" : value,
+      });
+    }
   };
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
+    if (formData?.categoryId === "") {
+      alert("Please select the category");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        `${process.env.server}/api/v1/business/${businessId}/products`,
+        formData
+      );
+
+      if (response.status === 200 || 201) {
+        // Handle success, e.g., show a success message
+        alert("Product created successfully");
+        console.log("Product created successfully!");
+
+        // Optionally, reset the form
+        setFormData({
+          id: "",
+          categoryId: "",
+          active: true,
+          title: "",
+          description: "",
+          price: 0,
+          priceUnit: "",
+          minimumOrderQuantity: 0,
+        });
+      } else {
+        // Handle other HTTP status codes if necessary
+        console.error("Product creation failed:", response.statusText);
+        console.log("Product creation failed");
+      }
+    } catch (error) {
+      // Handle any network or request errors
+      console.error("An error occurred:", error);
+
+      // Optionally, show an error message to the user
+      alert("Error creating product. Please try again later.");
+    }
   };
   return (
     <>
@@ -92,25 +173,30 @@ export default function Page() {
           >
             <Form.Group className="mb-3" controlId="formGroupCategoryName">
               <Form.Label>
-                <b>Category Name<span style={{color:"red"}}>*</span></b>
+                <b>
+                  Category Name<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 as="select"
-                name="title"
+                name="category"
                 required={true}
                 onChange={handleFormChange}
-                value={formData.title}
               >
-                <option value="Category A">Category A</option>
-                <option value="Category B">Category B</option>
-                <option value="Category X">Subcategory X</option>
-                <option value="Category Y">Subcategory Y</option>
-                {/* Add more category options as needed */}
+                <option value="null">Select Category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="formGroupActive">
               <Form.Label>
-                <b>Active<span style={{color:"red"}}>*</span></b>
+                <b>
+                  Active<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 as="select"
@@ -125,7 +211,9 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupTttle">
               <Form.Label>
-                <b>Title<span style={{color:"red"}}>*</span></b>
+                <b>
+                  Title<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
@@ -138,7 +226,9 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPrice">
               <Form.Label>
-                <b>Price<span style={{color:"red"}}>*</span></b>
+                <b>
+                  Price<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="number"
@@ -151,7 +241,9 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPriceUnit">
               <Form.Label>
-                <b>Price Unit<span style={{color:"red"}}>*</span></b>
+                <b>
+                  Price Unit<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="text"
@@ -167,7 +259,9 @@ export default function Page() {
               controlId="formGroupMinimumOrderQuantity"
             >
               <Form.Label>
-                <b>Minimum Order Quantity<span style={{color:"red"}}>*</span></b>
+                <b>
+                  Minimum Order Quantity<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 type="number"
@@ -180,7 +274,9 @@ export default function Page() {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupDescription">
               <Form.Label>
-                <b>Description<span style={{color:"red"}}>*</span></b>
+                <b>
+                  Description<span style={{ color: "red" }}>*</span>
+                </b>
               </Form.Label>
               <Form.Control
                 as="textarea"
@@ -213,22 +309,17 @@ export default function Page() {
                 <th>#</th>
                 <th>Product Name</th>
                 <th>Active</th>
-                <th>Description</th>
                 <th>Price</th>
                 <th>Price Unit</th>
                 <th>Min Order Quantity</th>
               </tr>
             </thead>
             <tbody>
-              {defaultProductData.map((product, index) => (
-                <tr
-                  key={index}
-                  onClick={() => handleRowClick(product.productId)}
-                >
+              {products?.map((product, index) => (
+                <tr key={index} onClick={() => handleRowClick(product.id)}>
                   <td>{index + 1}</td>
                   <td>{product.title}</td>
                   <td>{product.active ? "Yes" : "No"}</td>
-                  <td>{product.description}</td>
                   <td>{product.price}</td>
                   <td>{product.priceUnit}</td>
                   <td>{product.minimumOrderQuantity}</td>

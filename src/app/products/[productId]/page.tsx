@@ -9,15 +9,14 @@ interface page {
   };
 }
 export default function Page({ params }: page) {
-  const productId = "7djghg78";
   return (
     <>
       <h1 className="text-center py-3">Product Details</h1>
-      <ProductUpdate />
+      <ProductUpdate productId={params.productId} />
       <hr className="mx-5" />
-      <ProductOptions productId={productId} />
+      <ProductOptions productId={params.productId} />
       <hr className="mx-5" />
-      <ProductVariants productId={productId} />
+      <ProductVariants productId={params.productId} />
     </>
   );
 }

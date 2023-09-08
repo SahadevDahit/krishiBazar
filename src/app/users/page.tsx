@@ -1,54 +1,47 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./page.module.css";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 // Define the User interface
 interface User {
-  userId: string;
+  id: string;
   mobileNumber: string;
   firstName: string;
+  middleName: string;
   lastName: string;
   email: string;
 }
 
 export default function Home() {
-  // Default user data array
-  const defaultUserData: User[] = [
-    {
-      userId: "1",
-      mobileNumber: "123-456-7890",
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@example.com",
-    },
-    {
-      userId: "2",
-      mobileNumber: "987-654-3210",
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "jane@example.com",
-    },
-    {
-      userId: "3",
-      mobileNumber: "555-555-5555",
-      firstName: "Alice",
-      lastName: "Johnson",
-      email: "alice@example.com",
-    },
-    {
-      userId: "4",
-      mobileNumber: "777-888-9999",
-      firstName: "Bob",
-      lastName: "Williams",
-      email: "bob@example.com",
-    },
-    // Add more user data objects as needed
-  ];
+  // State variable for users
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(`${process.env.server}/api/v1/users`);
+        if (response.status === 200 || response.status === 201) {
+          // Update the users state with the API response data
+          setUsers(response.data);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching users:", error);
+        alert("Error in fetching user data");
+      }
+    };
+    fetchUsers();
+  }, []);
 
   // State variable for search value
   const [searchValue, setSearchValue] = useState<string>("");
@@ -58,10 +51,8 @@ export default function Home() {
   };
 
   // Event handler for search button click
-  const handleSearchClick = () => {
-    // Log the search value
-    console.log("Search Value:", searchValue);
-    setSearchValue("");
+  const handleSearchClick = async () => {
+   
   };
 
   return (
@@ -82,7 +73,7 @@ export default function Home() {
                     onChange={(e) => setSearchValue(e.target.value)}
                   />
                 </Form.Group>
-                <div className="input-group-append">
+                <div className="input-group-append ms-1">
                   <Button variant="primary" onClick={handleSearchClick}>
                     <FontAwesomeIcon icon={faSearch} />
                   </Button>
@@ -104,16 +95,18 @@ export default function Home() {
               <th>#</th>
               <th>Mobile Number</th>
               <th>First Name</th>
+              <th>Middle Name</th>
               <th>Last Name</th>
               <th>Email</th>
             </tr>
           </thead>
           <tbody>
-            {defaultUserData.map((user) => (
-              <tr key={user.userId} onClick={() => handleRowClick(user.userId)}>
-                <td>{user.userId}</td>
+            {users?.map((user, index) => (
+              <tr key={user.id} onClick={() => handleRowClick(user.id)}>
+                <td>{index + 1}</td>
                 <td>{user.mobileNumber}</td>
                 <td>{user.firstName}</td>
+                <td>{user.middleName}</td>
                 <td>{user.lastName}</td>
                 <td>{user.email}</td>
               </tr>

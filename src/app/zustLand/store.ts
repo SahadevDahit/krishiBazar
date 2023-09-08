@@ -6,6 +6,6 @@ interface BearState {
 
 export const useStore = create<BearState>()(
       (set) => ({
-        businessId: "0jgjhg78",
+        businessId: "2",
       }),
 )

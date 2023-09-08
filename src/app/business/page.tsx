@@ -1,49 +1,32 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import styles from "./page.module.css";
 import Table from "react-bootstrap/Table";
-
+import axios from "axios";
+import { useStore } from "../zustLand/store";
 interface Order {
-  orderId: string;
+  id: string;
   status: string;
   confirmed: boolean;
 }
 
 interface Business {
-  businessId: string;
+  id: string;
   ownerId: string;
   name: string;
   address: string;
   phoneNumber: string;
 }
 
-interface BusinessFormData {
-  name: string;
-  address: string;
-  phoneNumber: number;
-}
-
 export default function Page() {
-  const orders: Order[] = [
-    { orderId: "1", status: "confirmed", confirmed: true },
-    { orderId: "2", status: "pending", confirmed: false },
-    { orderId: "3", status: "shipped", confirmed: true },
-  ];
+  const { businessId } = useStore();
+  const [orders, setOrders] = useState<Order[]>();
 
-  const defaultBusinessData: Business[] = [
-    {
-      businessId: "78sgjdhgj87",
-      ownerId: "1",
-      name: "Business A",
-      address: "123 Main St",
-      phoneNumber: 1234567890,
-    },
-    // ... (other default data)
-  ];
-
-  const [businessForm, setBusinessForm] = useState<BusinessFormData>({
+  const [businessForm, setBusinessForm] = useState<Business>({
+    id: "",
+    ownerId: "",
     name: "",
     address: "",
     phoneNumber: "",
@@ -51,10 +34,54 @@ export default function Page() {
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(
     null
   );
+  const [business, setBusiness] = useState<Business[] | null>(null);
+
+  useEffect(() => {
+    const fetchBusiness = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.server}/api/v1/business`
+        );
+        if (response.status === 200 || response.status === 201) {
+          // Update the users state with the API response data
+          setBusiness(response.data);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching users:", error);
+        alert("Error in fetching user data");
+      }
+    };
+    const fetchorders = async () => {
+      try {
+        const bid = Number(businessId);
+        const response = await axios.get(
+          `${process.env.server}/api/v1/business/${bid}/orders`
+        );
+        if (response.status === 200 || response.status === 201) {
+          setOrders(response.data);
+        } else {
+          console.error(
+            "Server responded with an unexpected status:",
+            response.status
+          );
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching users:", error);
+      }
+    };
+    fetchBusiness();
+    fetchorders();
+  }, []);
+
   const handleBusinessClick = (businessId: string) => {
     // Find the clicked business from the defaultBusinessData array
-    const clickedBusiness = defaultBusinessData.find(
-      (business) => business.businessId === businessId
+    const clickedBusiness = business?.find(
+      (business) => business.id === businessId
     );
 
     if (clickedBusiness) {
@@ -63,6 +90,8 @@ export default function Page() {
 
       // Populate the form fields with the clicked business data
       setBusinessForm({
+        id: clickedBusiness.id,
+        ownerId: clickedBusiness.ownerId,
         name: clickedBusiness.name,
         address: clickedBusiness.address,
         phoneNumber: clickedBusiness.phoneNumber,
@@ -82,23 +111,119 @@ export default function Page() {
     window.location.href += `/${orderId}`;
   };
 
-  const handleSubmitBusinessForm = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Handle form submission here, for example, sending data to the server
-    console.log("Business Form Data:", businessForm);
-    // You can perform further actions, such as sending the data to the server
+  const updateBusiness = async () => {
+    if (selectedBusiness?.id !== null || undefined) {
+      try {
+        const response = await axios.patch(
+          `${process.env.server}/api/v1/business/${selectedBusiness?.id}`,
+          businessForm
+        );
+
+        if (response.status === 200) {
+          // Handle success, e.g., show a success message
+          alert("Business updated successfully");
+          console.log("Business updated successfully!");
+        } else {
+          // Handle other HTTP status codes if necessary
+          console.error("Business update failed:", response.statusText);
+          console.log("Business update failed");
+        }
+      } catch (error) {
+        // Handle any network or request errors
+        console.error("An error occurred:", error);
+      }
+    } else {
+      alert("Please select an existing Business");
+    }
+  };
+  const deleteBusiness = async () => {
+    if (!selectedBusiness) {
+      return; // No business selected, nothing to delete
+    }
+
+    try {
+      const response = await axios.delete(
+        `${process.env.server}/api/v1/business/${selectedBusiness.id}`
+      );
+
+      if (response.status === 200 || 201) {
+        // Handle success, e.g., show a success message
+        alert("Business deleted successfully");
+        console.log("Business deleted successfully!");
+
+        // Clear the form and selected business after deletion
+        setBusinessForm({
+          id: "",
+          ownerId: "",
+          name: "",
+          address: "",
+          phoneNumber: "",
+        });
+        setSelectedBusiness(null);
+      } else {
+        // Handle other HTTP status codes if necessary
+        console.error("Business deletion failed:", response.statusText);
+        console.log("Business deletion failed");
+      }
+    } catch (error) {
+      // Handle any network or request errors
+      console.error("An error occurred:", error);
+    }
   };
 
+  const createBusiness = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.server}/api/v1/business`,
+        businessForm
+      );
+
+      if (response.status === 200 || 201) {
+        // Handle success, e.g., show a success message
+        alert("Business created sucessfully");
+        console.log("Business created successfully!");
+        // Optionally, reset the form and selected business
+        setBusinessForm({
+          id: "",
+          ownerId: "",
+          name: "",
+          address: "",
+          phoneNumber: "",
+        });
+        setSelectedBusiness(null);
+      } else {
+        // Handle other HTTP status codes if necessary
+        console.error("Business creation failed:", response.statusText);
+        console.log("Business creation failed");
+      }
+    } catch (error) {
+      // Handle any network or request errors
+      console.error("An error occurred:", error);
+    }
+  };
   return (
     <>
       <h2 className="text-center py-3">Business Information</h2>
 
       <div className="container d-sm-block d-md-flex justify-content-around">
         <div className={`${styles.form} shadow-lg p-3 bg-white rounded`}>
-          <Form
-            className="border rounded-3 p-3 mb-4"
-            onSubmit={handleSubmitBusinessForm}
-          >
+          <Form className="border rounded-3 p-3 mb-4">
+            <Form.Group className="mb-3" controlId="formGroupOwnerId">
+              <Form.Label>
+                <b>
+                  Owner ID<span style={{ color: "red" }}>*</span>
+                </b>
+              </Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Owner ID"
+                name="ownerId"
+                required={true}
+                value={businessForm.ownerId}
+                onChange={handleBusinessFormChange}
+              />
+            </Form.Group>
+
             <Form.Group className="mb-3" controlId="formGroupName">
               <Form.Label>
                 <b>
@@ -136,7 +261,7 @@ export default function Page() {
                 </b>
               </Form.Label>
               <Form.Control
-                type="number"
+                type="text"
                 placeholder="Enter Number"
                 name="phoneNumber"
                 required={true}
@@ -147,22 +272,22 @@ export default function Page() {
             <div className="d-sm-inline-block d-md-flex">
               <Button
                 variant="primary"
-                type="submit"
                 className="mb-2 mb-md-0 mt-md-2 mx-1"
+                onClick={createBusiness}
               >
                 Create
               </Button>
               <Button
                 variant="primary"
-                type="submit"
                 className="mb-2 mb-md-0 mt-md-2 mx-1"
+                onClick={updateBusiness}
               >
                 Update
               </Button>
               <Button
                 variant="primary"
-                type="submit"
                 className="mb-2 mb-md-0 mt-md-2 mx-1"
+                onClick={deleteBusiness}
               >
                 Delete
               </Button>
@@ -186,12 +311,12 @@ export default function Page() {
               </tr>
             </thead>
             <tbody>
-              {defaultBusinessData.map((business) => (
+              {business?.map((business, index) => (
                 <tr
-                  key={business.ownerId}
-                  onClick={() => handleBusinessClick(business.businessId)}
+                  key={business.id}
+                  onClick={() => handleBusinessClick(business.id)}
                 >
-                  <td>{business.ownerId}</td>
+                  <td>{index + 1}</td>
                   <td>{business.name}</td>
                   <td>{business.address}</td>
                   <td>{business.phoneNumber}</td>
@@ -219,13 +344,10 @@ export default function Page() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order, index: number) => (
-            <tr
-              key={order.orderId}
-              onClick={() => handleRowClick(order.orderId)}
-            >
+          {orders?.map((order, index: number) => (
+            <tr key={order.id} onClick={() => handleRowClick(order.id)}>
               <td>{index + 1}</td>
-              <td>{order.orderId}</td>
+              <td>{order.id}</td>
               <td>{order.status}</td>
               <td>{order.confirmed ? "Yes" : "No"}</td>
             </tr>
