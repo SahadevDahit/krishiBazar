@@ -10,6 +10,7 @@ import HomePage from "./components/home";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { motion, useAnimation } from "framer-motion";
 
 // Define the Product interface
 interface Product {
@@ -22,7 +23,6 @@ interface Product {
 export default function Page() {
   const { businessId } = useStore();
   const [searchValue, setSearchValue] = useState<string>("");
-
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -32,7 +32,6 @@ export default function Page() {
           `${process.env.server}/api/v1/business/${businessId}/products`
         );
         if (response.status === 200 || response.status === 201) {
-          // Update the products state with the API response data
           setProducts(response.data);
         } else {
           console.error(
@@ -71,7 +70,28 @@ export default function Page() {
     }
   };
 
-return (
+  const cardAnimationControls = useAnimation();
+
+  useEffect(() => {
+    const animateCardsSequentially = async () => {
+      for (let index = 0; index < products.length; index++) {
+        await cardAnimationControls.start({
+          opacity: 1,
+          y: 0,
+          scale: 1, // Initial scale (normal size)
+          rotateY: 0,
+          transition: { duration: 0.5 },
+        });
+        await cardAnimationControls.start({
+          scale: 1.1, // Zoom-in scale
+        });
+      }
+    };
+
+    animateCardsSequentially();
+  }, [products, cardAnimationControls]);
+
+  return (
     <>
       <HomePage />
       <div className="container-fluid w-100 pt-5">
@@ -100,8 +120,13 @@ return (
         </div>
 
         <div className="row">
-          {products.map((product) => (
-            <div key={product.id} className="col-sm-12 col-md-4 col-lg-3 mb-4">
+          {products.map((product, index) => (
+            <motion.div
+              key={product.id}
+              className="col-sm-12 col-md-4 col-lg-3 mb-4"
+              initial={{ opacity: 0, y: 50, rotateY: -180 }}
+              animate={cardAnimationControls}
+            >
               <Card className={`w-100 shadow-lg rounded`}>
                 <div className="text-center">
                   <div
@@ -144,7 +169,7 @@ return (
                   </div>
                 </Card.Body>
               </Card>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

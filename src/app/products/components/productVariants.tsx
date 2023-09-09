@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
-
+import axios from "axios";
+import { useStore } from "../../zustLand/store";
 interface ProductVariants {
   productVariantId: string;
   productVariant1: string;
@@ -28,6 +29,7 @@ interface ProductOptionsProps {
 }
 
 export default function ProductOptions({ productId }: ProductOptionsProps) {
+  const { businessId } = useStore();
   // Define states for each product variant form
   const [variant1, setVariant1] = useState<ProductVariant1>({
     productVariantId: "",

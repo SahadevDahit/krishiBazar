@@ -238,6 +238,7 @@ export default function Page({ productId }: ProductUpdate) {
               alt="Product Image"
               width={100} // Set the desired width
               height={100} // Set the desired height
+              className="px-1"
             />
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Control
