@@ -10,14 +10,12 @@ import HomePage from "./components/home";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { motion, useAnimation } from "framer-motion";
 
-// Define the Product interface
 interface Product {
   id: string;
   title: string;
   price: number;
-  productImage: string; // Using the same image URL for all products
+  productImage: string;
 }
 
 export default function Page() {
@@ -70,27 +68,6 @@ export default function Page() {
     }
   };
 
-  const cardAnimationControls = useAnimation();
-
-  useEffect(() => {
-    const animateCardsSequentially = async () => {
-      for (let index = 0; index < products.length; index++) {
-        await cardAnimationControls.start({
-          opacity: 1,
-          y: 0,
-          scale: 1, // Initial scale (normal size)
-          rotateY: 0,
-          transition: { duration: 0.5 },
-        });
-        await cardAnimationControls.start({
-          scale: 1.1, // Zoom-in scale
-        });
-      }
-    };
-
-    animateCardsSequentially();
-  }, [products, cardAnimationControls]);
-
   return (
     <>
       <HomePage />
@@ -121,11 +98,9 @@ export default function Page() {
 
         <div className="row">
           {products.map((product, index) => (
-            <motion.div
+            <div
               key={product.id}
               className="col-sm-12 col-md-4 col-lg-3 mb-4"
-              initial={{ opacity: 0, y: 50, rotateY: -180 }}
-              animate={cardAnimationControls}
             >
               <Card className={`w-100 shadow-lg rounded`}>
                 <div className="text-center">
@@ -134,14 +109,14 @@ export default function Page() {
                     style={{
                       width: "100%",
                       height: 0,
-                      paddingTop: "60%", // 60% for a 2:3 aspect ratio
+                      paddingTop: "60%",
                       position: "relative",
                     }}
                   >
                     <Image
                       src={"/product.svg"}
                       alt="product Image"
-                      layout="fill" // This fills the container dimensions
+                      layout="fill"
                     />
                   </div>
                 </div>
@@ -169,7 +144,7 @@ export default function Page() {
                   </div>
                 </Card.Body>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

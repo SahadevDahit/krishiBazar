@@ -46,7 +46,7 @@ const Navigationbar: React.FC = () => {
     <>
       <Navbar expand="lg" className={styles.nav}>
         <Container fluid>
-          <div className="w-5 d-flex align-items-center">
+          <div className="w-5 d-sm-block d-md-flex align-items-center">
             <Navbar.Brand href="/">
               <motion.div
                 initial="hidden"

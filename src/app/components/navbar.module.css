@@ -7,4 +7,5 @@
     box-shadow: -1px 7px 5px -6px rgba(0, 0, 0, 0.75);
     background-color: white;
     color: black;
+    overflow-x:auto !important;
 }
